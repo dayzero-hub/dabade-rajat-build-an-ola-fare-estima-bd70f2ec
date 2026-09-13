@@ -4,6 +4,9 @@ from fare import calculate_fare
 
 app = Flask(__name__)
 
+MAX_RECENT_ESTIMATES = 10
+recent_estimates = []
+
 
 def _require_number(data, field, minimum=None, maximum=None):
     if field not in data:
@@ -45,7 +48,16 @@ def estimate():
         surge = 1.0
 
     total, breakdown = calculate_fare(distance_km, duration_min, surge)
+
+    recent_estimates.insert(0, {"total": total, "breakdown": breakdown})
+    del recent_estimates[MAX_RECENT_ESTIMATES:]
+
     return jsonify(total=total, breakdown=breakdown)
+
+
+@app.get("/estimates")
+def estimates():
+    return jsonify(recent_estimates)
 
 
 if __name__ == "__main__":
