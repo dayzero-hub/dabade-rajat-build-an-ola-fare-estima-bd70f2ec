@@ -28,8 +28,17 @@ You need Python 3. Check with `python3 --version`.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install flask
+pip install -r requirements.txt
 python app.py
+```
+
+Then, in another terminal:
+
+```bash
+curl -i http://127.0.0.1:5000/health
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+# {"status":"ok"}
 ```
 
 **The bit that catches everyone:** `source .venv/bin/activate` has to be run again in every
