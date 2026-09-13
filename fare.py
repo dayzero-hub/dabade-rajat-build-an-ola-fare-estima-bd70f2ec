@@ -11,20 +11,21 @@ def calculate_fare(distance_km, duration_min, surge):
     duration_cost = PER_MIN * duration_min
     subtotal = base + distance_cost + duration_cost
     surged = subtotal * surge
-    minimum_adjustment = max(MINIMUM_FARE - surged, 0)
-    total = surged + minimum_adjustment
+    total = round(max(surged, MINIMUM_FARE), 2)
+    after_surge = round(surged, 2)
 
     breakdown = {
-        "base": base,
-        "distance_cost": distance_cost,
-        "duration_cost": duration_cost,
-        "subtotal": subtotal,
+        "base": round(base, 2),
+        "distance_cost": round(distance_cost, 2),
+        "duration_cost": round(duration_cost, 2),
+        "subtotal": round(subtotal, 2),
         "surge_multiplier": surge,
-        "after_surge": surged,
-        "minimum_fare_adjustment": minimum_adjustment,
-        "total": round(total, 2),
+        "after_surge": after_surge,
+        "minimum_fare_adjustment": round(total - after_surge, 2),
+        "total": total,
     }
-    return round(total, 2), breakdown
+    assert breakdown["after_surge"] + breakdown["minimum_fare_adjustment"] == breakdown["total"]
+    return total, breakdown
 
 
 if __name__ == "__main__":
